@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+    <technical_books>
+        <name>Python for Dummies</name>
+        <isbn>123456</isbn>
+        <author>James Quintin</author>
+    </technical_books>
+    <technical_books>
+        <name>xml for Dummies</name>
+        <isbn>654321</isbn>
+        <author>Mike Tyson</author>
+    </technical_books>
+    <cookery_books>
+        <name>Bake me a cake</name>
+        <isbn>78910</isbn>
+        <author>Jane Doe</author>
+    </cookery_books>
+    <cookery_books>
+        <name>How to Cook a Steak</name>
+        <isbn>10987</isbn>
+        <author>John Joe</author>
+    </cookery_books>
+</books>
