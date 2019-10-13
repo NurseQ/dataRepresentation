@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Control/Conditions</title>
+    </head>
+    <body>
+        <input type="number" onchange = "checkNumber(this)"/>
+        <br/>
+        <div id = "output">
+            Output Here
+        </div>
+        <script>
+            function checkNumber(inputElement){
+                var value = inputElement.value
+                if(value < 10){
+                    document.getElementById("output").innerText = "too low"
+                }else if (value > 10){
+                    document.getElementById("output").innerText = "too high"
+                }else{
+                    document.getElementById("output").innerText = "Just right"
+                }
+            }
+        </script>
+    </body>
+    
+
+</html>
