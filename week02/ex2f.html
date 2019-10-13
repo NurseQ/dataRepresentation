@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>For loops</title>
+    </head>
+    <body>
+        <div id = "output">
+            output here
+        </div>
+
+
+        <script>
+            for (var i=0; i<10;i++ ){
+                console.log(i)
+            }
+
+            var names = ["james", "rona", "roisin"]
+            var output = ""
+
+            for (name of names){
+                output += name + "<br/>"
+            }
+            document.getElementById("output").innerHTML = output
+        </script>
+    </body>
+    
+
+</html>
