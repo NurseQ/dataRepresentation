@@ -55,8 +55,8 @@ def create_car():
     return jsonify( {'car':car }),201
 # sample test
 # curl -i -H "Content-Type:application/json" -X POST -d '{"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}' http://localhost:5000/cars
-# for windows use this one
-# curl -i -H "Content-Type:application/json" -X POST -d "{\"reg\":\"12 D 1234\",\"make\":\"Fiat\",\"model\":\"Punto\",\"price\":3000}" http://localhost:5000/cars
+# curl -i -H "Content-Type:application/json" -X POST -d "{\"reg\":\"12 D 1234\",\"make\":\"Fiat\",\"model\":\"Punto\",\"price\":3000}' http://localhost:5000/cars
+
 @app.route('/cars/<string:reg>', methods =['PUT'])
 def update_car(reg):
     foundCars=list(filter(lambda t : t['reg'] ==reg, cars))
@@ -75,8 +75,8 @@ def update_car(reg):
     foundCars[0]['price'] =request.json.get('price', foundCars[0]['price'])
     return jsonify( {'car':foundCars[0]})
 #curl -i -H "Content-Type:application/json" -X PUT -d '{"make":"Fiesta"}' http://localhost:5000/cars/181%20G%201234
-# for windows use this one
 #curl -i -H "Content-Type:application/json" -X PUT -d "{\"make\":\"Fiesta\"}" http://localhost:5000/cars/181%20G%201234
+
 
 @app.route('/cars/<string:reg>', methods =['DELETE'])
 def delete_car(reg):
@@ -97,4 +97,3 @@ def not_found400(error):
 
 if __name__ == '__main__' :
     app.run(debug= True)
-
