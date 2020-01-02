@@ -42,17 +42,19 @@ def create():
         "Doctor": request.json['Doctor'],
         "Gender": request.json['Gender'],
     }
-     
-    patients.append(patient)
+    values = (patient['Name'], patient['Diagnosis'], patient['DOB'], patient['Doctor'], patient['Gender']) 
+    newId = patientDAO.create(values)
+    patient['id'] = newId
+        
     return jsonify(patient)
 
 # curl -i -H "Content-Type:application/json" -X PUT -d "{\"Name\":\"Jay Leno\", \"Diagnosis\":\"STI\",\"DOB\":\"1950/07/15\",\"Doctor\":\"Dr. Zimmer\",\"Gender\":\"Male\"}" http://127.0.0.1:5000/patients/1
 @app.route('/patients/<int:id>', methods=['PUT'])
 def update(id):
-    foundPatients =  list(filter(lambda b: b['id']==id, patients))
-    if len(foundPatients) ==0:
+    foundPatient =  patientDAO.findByID(id)
+    if not foundPatient:
         abort(404)
-    foundPatient = foundPatients[0]
+    
     if not request.json:
         abort(400)
     reqJson = request.json
@@ -66,6 +68,7 @@ def update(id):
         foundPatient['Doctor'] = reqJson['Doctor']
     if 'Gender' in reqJson:
         foundPatient['Gender'] = reqJson['Gender']
+    values = (foundPatient['Name'], foundPatient['Diagnosis'], foundPatient['DOB'], foundPatient['Doctor'], foundPatient['Gender'], foundPatient['id'])
     return jsonify(foundPatient)
 
 @app.route('/patients/<int:id>',methods=['DELETE'])
