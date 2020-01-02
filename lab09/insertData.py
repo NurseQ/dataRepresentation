@@ -7,8 +7,8 @@ db = mysql.connector.connect(
     database="datarepresentation"
 )
 cursor = db.cursor()
-sql="insert into student (name, age) values (%s,%s)"
-values = ("Mary",21)
+sql="insert into patients (name, diagnosis, DOB, doctor, gender) values (%s,%s,%s,%s,%s)"
+values = ("Mary","Heart Burn", '1995-04-05', "Dr. Murray", "F" )
 
 cursor.execute(sql, values)
 

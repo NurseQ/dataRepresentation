@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, abort
+from zpatientsDAO import patientsDAO
 
 app = Flask(__name__, static_url_path='', static_folder='.')
 
@@ -18,32 +19,30 @@ nextId=6
 
 @app.route('/patients')
 def getAll():
-    return jsonify(patients)
+    results = patientsDAO.getAll()
+    return jsonify(results)
 
 @app.route('/patients/<int:id>')
 def findById(id):
-    foundPatient =  list(filter(lambda b: b['id']==id, patients))
-    if len(foundPatient) == 0:
-        return jsonify ({}), 204
-
-    return jsonify(foundPatient[0])
+    foundPatient = patientsDAO.findByID(id)
+    return jsonify(foundPatient)
 
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"Name\":\"Jay Leno\", \"Diagnosis\":\"STI\",\"DOB\":\"1950/07/15\",\"Doctor\":\"Dr. Zimmer\",\"Gender\":\"Male\"}" http://127.0.0.1:5000/patients
 @app.route('/patients', methods = ['POST'])
 def create():
-    global nextId
+    
     if not request.json:
         abort(400)
     # other checking
     patient = {
-        "id" : nextId,
+        
         "Name": request.json['Name'],
         "Diagnosis": request.json['Diagnosis'],
         "DOB": request.json['DOB'],
         "Doctor": request.json['Doctor'],
         "Gender": request.json['Gender'],
     }
-    nextId += 1 
+     
     patients.append(patient)
     return jsonify(patient)
 

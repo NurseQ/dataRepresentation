@@ -8,5 +8,5 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
-sql="CREATE TABLE student (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT)"
+sql="CREATE TABLE patients (id INT AUTO_INCREMENT PRIMARY KEY, name varchar(100), diagnosis varchar(100),DOB date, doctor varchar(100), gender enum('M','F'))"
 mycursor.execute(sql)

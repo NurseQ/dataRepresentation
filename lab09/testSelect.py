@@ -7,7 +7,7 @@ db = mysql.connector.connect(
     database="datarepresentation"
 )
 cursor = db.cursor()
-sql="select * from student where id = %s"
+sql="select * from patients where id = %s"
 values = (1,)
 
 cursor.execute(sql, values)
