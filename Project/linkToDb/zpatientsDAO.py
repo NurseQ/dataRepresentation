@@ -51,7 +51,7 @@ class PatientsDAO:
         print("delete done")
     
     def convertToDictionary(self, result):
-        colnames = ['id','name','diagnosis','DOB','doctor','gender']
+        colnames = ['id','Name','Diagnosis','DOB','Doctor','Gender']
         item = {}
 
         if result:
