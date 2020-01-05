@@ -1,4 +1,4 @@
-<import requests
+import requests
 from bs4 import BeautifulSoup
 page = requests.get("https://www.myhome.ie/residential/
 mayo/property-for-sale?page=1")

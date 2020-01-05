@@ -1,5 +1,5 @@
 import mysql.connector
-class PatientsDAO:
+class PatientDAO:
     db=""
     def __init__(self):
         self.db = mysql.connector.connect(
@@ -12,7 +12,7 @@ class PatientsDAO:
 
     def create(self, values):
         cursor = self.db.cursor()
-        sql="insert into patients (name, diagnosis, DOB, doctor, gender) values (%s,%s,%s,%s,%s)"
+        sql="insert into patient (name, diagnosis, DOB, doctor, gender) values (%s,%s,%s,%s,%s)"
         cursor.execute(sql, values)
 
         self.db.commit()
@@ -20,7 +20,7 @@ class PatientsDAO:
 
     def getAll(self):
         cursor = self.db.cursor()
-        sql="select * from patients"
+        sql="select * from patient"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
@@ -30,7 +30,7 @@ class PatientsDAO:
 
     def findByID(self, id):
         cursor = self.db.cursor()
-        sql="select * from patients where id = %s"
+        sql="select * from patient where id = %s"
         values = (id,)
         cursor.execute(sql, values)
         result = cursor.fetchone()
@@ -38,13 +38,13 @@ class PatientsDAO:
 
     def update(self, values):
         cursor = self.db.cursor()
-        sql="update patients set name= %s, diagnosis=%s, DOB=%s, doctor=%s, gender=%s  where id = %s"
+        sql="update patient set name= %s, diagnosis=%s, DOB=%s, doctor=%s, gender=%s  where id = %s"
         cursor.execute(sql, values)
         self.db.commit()
 
     def delete(self, id):
         cursor = self.db.cursor()
-        sql="delete from patients where id = %s"
+        sql="delete from patient where id = %s"
         values = (id,)
         cursor.execute(sql, values)
         self.db.commit()
@@ -60,4 +60,4 @@ class PatientsDAO:
                 item[colName] = value
         return item
 
-patientsDAO = PatientsDAO()
+patientDAO = PatientDAO()

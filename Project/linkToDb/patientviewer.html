@@ -1,0 +1,242 @@
+<html>
+    <head>
+        <title> view Patients</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+       
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <h1>Patients</h1>
+        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+        <div>
+            <table class="table" id="carTable">
+                <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Diagnosis</th>
+                        <th>DOB</th>
+                        <th>Doctor</th>
+                        <th>Gender</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+                
+            </table>
+        </div>
+        <div id='createUpdateForm' style="display: none">
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Patient</h2>
+                
+                Name <input type="text" name="Name"/><br/>
+                Diagnosis <input type="text" name="Diagnosis"/> <br/>
+                DOB <input type="date" name="DOB"/> <br/>
+                Doctor <input type="text" name="Doctor"/> <br/>
+                Gender <input type="text" name="Gender"/> <br/>
+                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+        </div>
+    </body>
+    <script>
+    function showCreate(){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('patientTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('updateLabel').style.display="none"
+        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doUpdateButton').style.display="none"
+    }
+    function showViewAll(){
+        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('patientTable').style.display="block"
+        document.getElementById('createUpdateForm').style.display="none"
+    }
+    function showUpdate(buttonElement){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('patientTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+        document.getElementById('createLabel').style.display="none"
+        document.getElementById('updateLabel').style.display="inline"
+        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doUpdateButton').style.display="block"
+        var rowElement = buttonElement.parentNode.parentNode
+        // these is a way of finding the closest <tr> which would safer, closest()
+        
+        var car = getCarFromRow(rowElement)
+        populateFormWithCar(car)
+    }
+    function doCreate(){
+        var form = document.getElementById('createUpdateForm')
+        var car = {}
+        car.reg = form.querySelector('input[name="reg"]').value
+        car.make = form.querySelector('select[name="make"]').value
+        car.model = form.querySelector('input[name="model"]').value
+        car.price = form.querySelector('input[name="price"]').value
+        console.log(JSON.stringify(car))
+        createCarAjax(car)
+        addCarToTable(car)
+        clearForm()
+        
+        showViewAll()
+    }
+    function doUpdate(){
+        var car = getCarFromForm();
+        var rowElement = document.getElementById(car.reg);
+        updateCarAjax(car);
+        setCarInRow(rowElement,car);
+       
+        clearForm();
+        showViewAll();
+    }
+    function doDelete(r){
+        var tableElement = document.getElementById('carTable');
+        var rowElement = r.parentNode.parentNode;
+        var index = rowElement.rowIndex;
+        deleteCarAjax(rowElement.getAttribute("id"));
+        tableElement.deleteRow(index);
+    }
+    function addCarToTable(patient){
+        var tableElement = document.getElementById('patientTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id',patient.id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = patient.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = patient.Name
+        var cell3 = rowElement.insertCell(2);
+        cell3.innerHTML = patient.Diagnosis
+        var cell4 = rowElement.insertCell(3);
+        cell4.innerHTML = patient.DOB
+        var cell5 = rowElement.insertCell(4);
+        cell5.innerHTML = patient.Doctor
+        var cell6 = rowElement.insertCell(5);
+        cell6.innerHTML = patient.Gender
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        var cell8 = rowElement.insertCell(6);
+        cell8.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+    }
+    function clearForm(){
+        var form = document.getElementById('createUpdateForm')
+        
+        form.querySelector('select[name="Name"]').value=''
+        form.querySelector('input[name="Diagnosis"]').value=''
+        form.querySelector('input[name="DOB"]').value=''
+        form.querySelector('input[name="Doctor"]').value=''
+        form.querySelector('input[name="Gender"]').value=''
+    }
+    function getPatientFromRow(rowElement){
+        var patient ={}
+        patient.id  = rowElement.cells[0].firstChild.textContent
+        patient.Name = rowElement.cells[1].firstChild.textContent
+        patient.Diagnosis = rowElement.cells[2].firstChild.textContent
+        // don't how to do the date here
+        patient.DOB = date(rowElement.cells[3].firstChild.textContent)
+        patient.Doctor = rowElement.cells[4].firstChild.textContent
+        patient.Gender = rowElement.cells[5].firstChild.textContent
+        return Patient
+    }
+    function setPatientInRow(rowElement, patient){
+        rowElement.cells[0].firstChild.textContent= patient.id  
+        rowElement.cells[1].firstChild.textContent= patient.Name 
+        rowElement.cells[2].firstChild.textContent= patient.Diagnosis
+        rowElement.cells[3].firstChild.textContent= patient.DOB
+        rowElement.cells[4].firstChild.textContent= patient.Doctor
+        rowElement.cells[5].firstChild.textContent= patient.Gender
+        
+    }
+    function populateFormWithPatient(car){
+        var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="reg"]').disabled = true
+        form.querySelector('input[name="reg"]').value  = car.reg
+        form.querySelector('select[name="make"]').value= car.make
+        form.querySelector('input[name="model"]').value= car.model
+        form.querySelector('input[name="price"]').value= car.price
+        return car
+    }
+    function getPatientFromForm(){
+        var form = document.getElementById('createUpdateForm')
+        var car = {}
+        car.reg = form.querySelector('input[name="reg"]').value
+        car.make = form.querySelector('select[name="make"]').value
+        car.model = form.querySelector('input[name="model"]').value
+        car.price = parseInt(form.querySelector('input[name="price"]').value,10)
+        console.log(JSON.stringify(car))
+        return car
+    }
+    function getAllAjax(){
+        $.ajax({
+            "url": "http://127.0.0.1:5000/patients",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (patient of result){
+                    addPatientToTable(patient);
+                }
+                
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function createPatientAjax(car){
+        //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
+        console.log(JSON.stringify(car));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars",
+            "method":"POST",
+            "data":JSON.stringify(car),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                 
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function updatePatientAjax(car){
+        //var car = {"reg":"12 D 1234","price":8000}
+        console.log(JSON.stringify(car));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars/"+encodeURI(car.reg),
+            "method":"PUT",
+            "data":JSON.stringify(car),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+               // console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function deletePatientAjax(reg){
+        //var car = {"reg":"12 D 1234"}
+        console.log(JSON.stringify(car));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars/"+encodeURI(reg),
+            "method":"DELETE",
+            "data":"",
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    getAllAjax();
+  
+    
+    </script>
+</html>
