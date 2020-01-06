@@ -9,7 +9,7 @@
         <h1>Patients</h1>
         <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
         <div>
-            <table class="table" id="carTable">
+            <table class="table" id="patientTable">
                 <tr>
                         <th>id</th>
                         <th>Name</th>
@@ -25,7 +25,7 @@
         </div>
         <div id='createUpdateForm' style="display: none">
                 <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Patient</h2>
-                
+                <input type = "hidden" name = "id"/>
                 Name <input type="text" name="Name"/><br/>
                 Diagnosis <input type="text" name="Diagnosis"/> <br/>
                 DOB <input type="date" name="DOB"/> <br/>
@@ -61,40 +61,40 @@
         var rowElement = buttonElement.parentNode.parentNode
         // these is a way of finding the closest <tr> which would safer, closest()
         
-        var car = getCarFromRow(rowElement)
-        populateFormWithCar(car)
+        var patient = getPatientFromRow(rowElement)
+        populateFormWithPatient(patient)
     }
     function doCreate(){
         var form = document.getElementById('createUpdateForm')
-        var car = {}
-        car.reg = form.querySelector('input[name="reg"]').value
-        car.make = form.querySelector('select[name="make"]').value
-        car.model = form.querySelector('input[name="model"]').value
-        car.price = form.querySelector('input[name="price"]').value
-        console.log(JSON.stringify(car))
-        createCarAjax(car)
-        addCarToTable(car)
-        clearForm()
+        var patient = {}
+        patient.Name = form.querySelector('input[name="Name"]').value
+        patient.Diagnosis = form.querySelector('input[name="Diagnosis"]').value
+        patient.DOB = form.querySelector('input[name="DOB"]').value
+        patient.Doctor = form.querySelector('input[name="Doctor"]').value
+        patient.Gender = form.querySelector('input[name="Gender"]').value
+        console.log(JSON.stringify(patient))
+        createPatientAjax(patient)
         
-        showViewAll()
+        
     }
     function doUpdate(){
-        var car = getCarFromForm();
-        var rowElement = document.getElementById(car.reg);
-        updateCarAjax(car);
-        setCarInRow(rowElement,car);
-       
+        var patient = getPatientFromForm();
+        var rowElement = document.getElementById(patient.id);
+        updatePatientAjax(patient);
+        setPatientInRow(rowElement,patient);
+        
         clearForm();
         showViewAll();
+        
     }
     function doDelete(r){
-        var tableElement = document.getElementById('carTable');
+        var tableElement = document.getElementById('patientTable');
         var rowElement = r.parentNode.parentNode;
         var index = rowElement.rowIndex;
-        deleteCarAjax(rowElement.getAttribute("id"));
+        deletePatientAjax(rowElement.getAttribute("id"));
         tableElement.deleteRow(index);
     }
-    function addCarToTable(patient){
+    function addPatientToTable(patient){
         var tableElement = document.getElementById('patientTable')
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',patient.id)
@@ -112,13 +112,13 @@
         cell6.innerHTML = patient.Gender
         var cell7 = rowElement.insertCell(6);
         cell7.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
-        var cell8 = rowElement.insertCell(6);
+        var cell8 = rowElement.insertCell(7);
         cell8.innerHTML = '<button onclick=doDelete(this)>delete</button>'
     }
     function clearForm(){
         var form = document.getElementById('createUpdateForm')
         
-        form.querySelector('select[name="Name"]').value=''
+        form.querySelector('input[name="Name"]').value=''
         form.querySelector('input[name="Diagnosis"]').value=''
         form.querySelector('input[name="DOB"]').value=''
         form.querySelector('input[name="Doctor"]').value=''
@@ -126,14 +126,14 @@
     }
     function getPatientFromRow(rowElement){
         var patient ={}
-        patient.id  = rowElement.cells[0].firstChild.textContent
+        patient.id  = rowElement.getAttribute('id')
         patient.Name = rowElement.cells[1].firstChild.textContent
         patient.Diagnosis = rowElement.cells[2].firstChild.textContent
         // don't how to do the date here
-        patient.DOB = date(rowElement.cells[3].firstChild.textContent)
+        patient.DOB = rowElement.cells[3].firstChild.textContent
         patient.Doctor = rowElement.cells[4].firstChild.textContent
         patient.Gender = rowElement.cells[5].firstChild.textContent
-        return Patient
+        return patient
     }
     function setPatientInRow(rowElement, patient){
         rowElement.cells[0].firstChild.textContent= patient.id  
@@ -144,24 +144,29 @@
         rowElement.cells[5].firstChild.textContent= patient.Gender
         
     }
-    function populateFormWithPatient(car){
+    function populateFormWithPatient(patient){
         var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="reg"]').disabled = true
-        form.querySelector('input[name="reg"]').value  = car.reg
-        form.querySelector('select[name="make"]').value= car.make
-        form.querySelector('input[name="model"]').value= car.model
-        form.querySelector('input[name="price"]').value= car.price
-        return car
+        form.querySelector('input[name="id"]').disabled = true
+        form.querySelector('input[name="id"]').value  = patient.id
+        form.querySelector('input[name="Name"]').value  = patient.Name
+        form.querySelector('input[name="Diagnosis"]').value= patient.Diagnosis
+        form.querySelector('input[name="DOB"]').value= patient.DOB
+        form.querySelector('input[name="Doctor"]').value= patient.Doctor
+        form.querySelector('input[name="Gender"]').value= patient.Gender
+        
+        return patient
     }
     function getPatientFromForm(){
         var form = document.getElementById('createUpdateForm')
-        var car = {}
-        car.reg = form.querySelector('input[name="reg"]').value
-        car.make = form.querySelector('select[name="make"]').value
-        car.model = form.querySelector('input[name="model"]').value
-        car.price = parseInt(form.querySelector('input[name="price"]').value,10)
-        console.log(JSON.stringify(car))
-        return car
+        var patient = {}
+        patient.id = form.querySelector('input[name="id"]').value
+        patient.Name = form.querySelector('input[name="Name"]').value
+        patient.Diagnosis = form.querySelector('input[name="Diagnosis"]').value
+        patient.DOB = form.querySelector('input[name="DOB"]').value
+        patient.Doctor = form.querySelector('input[name="Doctor"]').value
+        patient.Gender = form.querySelector('input[name="Gender"]').value
+        console.log(JSON.stringify(patient))
+        return patient
     }
     function getAllAjax(){
         $.ajax({
@@ -181,31 +186,34 @@
             }
         });
     }
-    function createPatientAjax(car){
+    function createPatientAjax(patient){
         //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
-        console.log(JSON.stringify(car));
+        console.log(JSON.stringify(patient));
         $.ajax({
-            "url": "http://127.0.0.1:5000/cars",
+            "url": "http://127.0.0.1:5000/patients",
             "method":"POST",
-            "data":JSON.stringify(car),
+            "data":JSON.stringify(patient),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 //console.log(result);
-                 
+                patient.id = result.id 
+                addPatientToTable(patient)
+                clearForm()
+                showViewAll()
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
             }
         });
     }
-    function updatePatientAjax(car){
+    function updatePatientAjax(patient){
         //var car = {"reg":"12 D 1234","price":8000}
-        console.log(JSON.stringify(car));
+        console.log(JSON.stringify(patient));
         $.ajax({
-            "url": "http://127.0.0.1:5000/cars/"+encodeURI(car.reg),
+            "url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
             "method":"PUT",
-            "data":JSON.stringify(car),
+            "data":JSON.stringify(patient),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
@@ -217,11 +225,11 @@
             }
         });
     }
-    function deletePatientAjax(reg){
-        //var car = {"reg":"12 D 1234"}
-        console.log(JSON.stringify(car));
+    function deletePatientAjax(id){
+        
+        //console.log(JSON.stringify('deleting '+car));
         $.ajax({
-            "url": "http://127.0.0.1:5000/cars/"+encodeURI(reg),
+            "url": "http://127.0.0.1:5000/patients/"+encodeURI(id),
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",
