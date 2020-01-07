@@ -1,13 +1,14 @@
 import mysql.connector
+import dbconfig as cfg
 class PatientDAO:
     db=""
     def __init__(self):
         self.db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
+        host=       cfg.mysql["host"],
+        user=       cfg.mysql["user"],
+        password=   cfg.mysql["password"],
         
-        database="datarepresentation"
+        database=   cfg.mysql["database"],
         )
 
     def create(self, values):
