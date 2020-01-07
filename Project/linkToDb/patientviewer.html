@@ -187,7 +187,7 @@
         });
     }
     function createPatientAjax(patient){
-        //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
+        
         console.log(JSON.stringify(patient));
         $.ajax({
             "url": "http://127.0.0.1:5000/patients",
@@ -208,7 +208,7 @@
         });
     }
     function updatePatientAjax(patient){
-        //var car = {"reg":"12 D 1234","price":8000}
+        
         console.log(JSON.stringify(patient));
         $.ajax({
             "url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
@@ -227,7 +227,7 @@
     }
     function deletePatientAjax(id){
         
-        //console.log(JSON.stringify('deleting '+car));
+        
         $.ajax({
             "url": "http://127.0.0.1:5000/patients/"+encodeURI(id),
             "method":"DELETE",

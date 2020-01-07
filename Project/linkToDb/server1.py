@@ -4,9 +4,7 @@ from zpatientsDAO import patientDAO
 app = Flask(__name__, static_url_path='', static_folder='.')
 
 
-# @app.route('/')
-# def index():
-#     return 'Hello, World!'
+
 
 @app.route('/patients')
 def getAll():
